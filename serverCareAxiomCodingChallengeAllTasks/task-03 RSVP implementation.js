@@ -24,7 +24,8 @@ function corefunctionality(){
         console.log(arrayOfString[i]);
 		text_li="";
         if(validateUrl(arrayOfString[i])){
-            const x = await fetch("https://"+arrayOfString[i])
+            // callback using fecth & .then
+            fetch("https://"+arrayOfString[i])
             .then(res => res.text())
             .then((text) => {
                 var $ = cheerio.load(text);
@@ -35,7 +36,6 @@ function corefunctionality(){
                 console.log("title:"+title);
                 return title;
             });
-            console.log("x:"+x.toString());
     }else{
         res.write(arrayOfString[i]+" - NO RESPONSE");
     }
@@ -53,7 +53,7 @@ function validateUrl(value)
     var regexp = new RegExp(expression);
     return regexp.test(value);
 } 
-app.get('/I/want/title/', async function(req, res) {
+app.get('/I/want/title/', function(req, res) {//callback
 
     corefunctionality()//send the response to the webpage
     .then(null, validateUrl)//validate the url and send the response to the webpage

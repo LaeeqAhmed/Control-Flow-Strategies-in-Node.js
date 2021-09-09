@@ -1,10 +1,13 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import cheerio  from 'cheerio';
+import RSVP from 'rsvp';
+import Step from 'step';
 const app = express();
 const router = express.Router();
 
-app.get('/I/want/title/', async function(req, res) {
+//Callback passing function as a second parameter;
+app.get('/I/want/title/', function(req, res) {
     const { address } = req.query;
 
     //console.log("address is "+ address);
@@ -15,7 +18,7 @@ app.get('/I/want/title/', async function(req, res) {
     var title="";
 	var arrayOfString = address.toString().split(",");
      
-    console.log(arrayOfString)
+    console.log(arrayOfString);
     function validateUrl(value)
     {
         console.log("value"+value);
@@ -28,8 +31,9 @@ app.get('/I/want/title/', async function(req, res) {
         console.log("expression output:"+validateUrl(arrayOfString[i]));
         console.log(arrayOfString[i]);
 		text_li="";
+        //callback using fetch & .then
         if(validateUrl(arrayOfString[i])){
-            const x = await fetch("https://"+arrayOfString[i])
+            fetch("https://"+arrayOfString[i])
             .then(res => res.text())
             .then((text) => {
                 var $ = cheerio.load(text);
@@ -40,7 +44,6 @@ app.get('/I/want/title/', async function(req, res) {
                 console.log("title:"+title);
                 return title;
             });
-            console.log("x:"+x.toString());
     }else{
         res.write(arrayOfString[i]+" - NO RESPONSE");
     }
@@ -60,3 +63,4 @@ app.get('*', function (req, res) {
 })
 
 app.listen(3000);
+

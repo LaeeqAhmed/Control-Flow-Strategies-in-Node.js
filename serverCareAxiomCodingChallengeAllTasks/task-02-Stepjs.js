@@ -1,13 +1,14 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import cheerio  from 'cheerio';
-import RSVP from 'rsvp';
 import Step from 'step';
 const app = express();
 const router = express.Router();
+
 //using step.js library we can easily serialize our code and passing as many functions in a single step; 
 
-app.get('/I/want/title/', async function(req, res) {
+app.get('/I/want/title/', function(req, res) {// callback using function as a parameter
+
     Step(// within a single Step you can use your many functions as you want....
         function(req, res) {
             const { address } = req.query;
@@ -26,8 +27,9 @@ app.get('/I/want/title/', async function(req, res) {
             console.log("expression output:"+validateUrl(arrayOfString[i]));
             console.log(arrayOfString[i]);
             text_li="";
+	    // callback using fetch & .then
             if(validateUrl(arrayOfString[i])){
-                const x = await fetch("https://"+arrayOfString[i])
+                fetch("https://"+arrayOfString[i])
                 .then(res => res.text())
                 .then((text) => {
                     var $ = cheerio.load(text);
@@ -38,7 +40,6 @@ app.get('/I/want/title/', async function(req, res) {
                     console.log("title:"+title);
                     return title;
                 });
-                console.log("x:"+x.toString());
         }else{
             res.write(arrayOfString[i]+" - NO RESPONSE");
         }
